@@ -1,0 +1,12 @@
+.radioOptions{
+    color: '#acacac';
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    border-top: 2px solid #ffd3ca;
+    padding-top: 13px;
+}

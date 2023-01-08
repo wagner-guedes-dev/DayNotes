@@ -9,22 +9,23 @@ function App() {
 
   
 
-
   const [title, setTitles] = useState('')
   const [notes, setNotes] = useState('')
   const [allNotes, setAllNotes] = useState([])
+  const [selectedValue, setSelectedValue] = useState('all')
 
 
   useEffect( ()=>{
-    async function getAllNotes(){
-      const response = await api.get('/annotations',)
-
-      setAllNotes(response.data)
-
-    }
 
     getAllNotes()
+
   },[] )
+
+  async function getAllNotes(){
+    const response = await api.get('/annotations',)
+
+    setAllNotes(response.data)
+  }
 
   async function handleSubmit(e){
     e.preventDefault()
@@ -38,7 +39,53 @@ function App() {
     setTitles('')
     setNotes('')
 
-    setAllNotes([...allNotes, response.data])
+    if(selectedValue != 'all'){
+      getAllNotes()
+    }else{
+      setAllNotes([...allNotes, response.data])
+    }
+    setSelectedValue('all')
+
+  }
+
+  async function handleDelete(id){
+    const deletedNote = await api.delete(`/annotations/${id}`)
+
+    if(deletedNote){
+      setAllNotes(allNotes.filter(note => note._id != id))
+    }
+  }
+
+  async function hangleChangePriority(id){
+    const priority = await api.post(`/priorities/${id}`)
+
+    if(priority && selectedValue != 'all'){
+      loadNotes(selectedValue)
+    }else if(priority){
+      getAllNotes()
+    }
+  }
+
+  async function loadNotes(option){
+    const params = { priority: option}
+    const response = await api.get('/priorities', { params })
+    
+    if(response){
+      setAllNotes(response.data)
+    }
+
+  }
+
+  function handleChange(e){
+    setSelectedValue(e.value)
+    
+    if(e.checked && e.value != 'all'){
+      loadNotes(e.value)
+      
+    }else{
+      getAllNotes()
+      
+    }
   }
 
   useEffect(()=>{
@@ -54,6 +101,7 @@ function App() {
     
     enableSubmitButton()
   }, [title, notes ])
+  
 
   return (
     <div className="App">
@@ -65,6 +113,7 @@ function App() {
             <label htmlFor='title'>Titulo da Anotação</label>
             <input 
               required
+              maxLength='30'
               value={title}
               onChange={ e => setTitles(e.target.value) }
             />
@@ -82,15 +131,24 @@ function App() {
             <button id='btn_submit' type='submit'>Salvar</button>
 
         </form>
-        <RadioButton/>
+        
+        <RadioButton 
+          handleChangeInput={handleChange}
+          selectedValueInput={selectedValue}
+          />
       </aside>
 
       <main>
         <ul>
 
           {allNotes.map(data => (
-            <Notes data={data}/>
-          ))}
+            <Notes 
+            key={data._id}
+            data={data} 
+            handleDelete={handleDelete}
+            hangleChangePriority={hangleChangePriority}
+            />
+            ))}
           
         </ul>
       </main>

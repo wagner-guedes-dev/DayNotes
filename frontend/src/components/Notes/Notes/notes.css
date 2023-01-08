@@ -1,8 +1,8 @@
 li.notepad-infos div{
     display: flex;
     justify-content: space-between;
-  }
-  li.notepad-infos{
+}
+ li.notepad-infos{
     background-color: #fff;
     box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.2);
     border-radius: 10px;
@@ -47,3 +47,25 @@ li.notepad-infos div{
     color:#eaff00;
     transition: .2s;
   }
+
+
+/* Priority */
+li.priority{
+  background-color: #eb8f7a;
+}
+li.priority textarea{
+  background-color: #eb8f7a;
+  color: #fff;
+}
+li.priority strong{
+  color: #fff;
+}
+li.priority div div,
+li.priority span{
+  color: #741d09;
+}
+li.priority div div:hover,
+li.priority span:hover{
+  color:#fff;
+  transition: .2s;
+}
